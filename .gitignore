@@ -1,0 +1,19 @@
+# závislosti a prostředí
+node_modules/
+.venv/
+__pycache__/
+
+# scénáře žijí v repu faceless-yt-brain (zde jen lokální kopie)
+scripts/
+
+# výstupy a velká data (necommitovat)
+out/
+assets/
+remotion/public/
+tts-probe/models/
+tts-probe/output/
+
+# tajemství a cache
+.env
+.remotion/
+*.log
