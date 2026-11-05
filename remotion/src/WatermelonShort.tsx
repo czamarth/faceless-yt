@@ -8,11 +8,11 @@ import {Shell, Svg, cue, font, ramp, sm, NEVER} from './ConceptShorts';
  * Gag: pilulka "STATUS: GREEN" zůstane zelená i při rozpůlení karty.
  */
 
-const GREEN = '#2FB67C';
-const RED = '#E5484D';
-const INK = '#1B1F2A';
-const BLUE = '#2F5BFF';
-const GOLD = '#E0A800';
+export const GREEN = '#2FB67C';
+export const RED = '#E5484D';
+export const INK = '#1B1F2A';
+export const BLUE = '#2F5BFF';
+export const GOLD = '#E0A800';
 
 const CARD = {x: 100, y: 330, w: 880, h: 880, head: 110};
 const DOT_Y = 690;
@@ -24,36 +24,49 @@ const back = (x: number) => {
 	const c3 = c1 + 1;
 	return 1 + c3 * Math.pow(x - 1, 3) + c1 * Math.pow(x - 1, 2);
 };
-const pop = (t: number, a: number, d = 0.35) => {
+export const pop = (t: number, a: number, d = 0.35) => {
 	const x = ramp(t, a, a + d);
 	return x <= 0 ? 0 : back(x);
 };
-const lerp = (a: number, b: number, x: number) => a + (b - a) * x;
+export const lerp = (a: number, b: number, x: number) => a + (b - a) * x;
 const rgb = (h: string) => [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16));
-const mix = (a: string, b: string, x: number) => {
+export const mix = (a: string, b: string, x: number) => {
 	const [r1, g1, b1] = rgb(a);
 	const [r2, g2, b2] = rgb(b);
 	return `rgb(${Math.round(lerp(r1, r2, x))},${Math.round(lerp(g1, g2, x))},${Math.round(lerp(b1, b2, x))})`;
 };
 // čas uvnitř věty: podíl `frac` mezi začátkem a koncem segmentu
-const cueAt = (segs: Segment[], re: RegExp, frac: number) => {
+export const cueAt = (segs: Segment[], re: RegExp, frac: number) => {
 	const s = segs.find((x) => re.test(x.text));
 	return s ? s.start + (s.end - s.start) * frac : NEVER;
 };
 
-const Bean: React.FC<{x: number; y: number; s?: number; tie: string; jump?: number; shout?: number}> = ({
-	x,
-	y,
-	s = 1,
-	tie,
-	jump = 0,
-	shout = 0,
-}) => (
+export const Bean: React.FC<{
+	x: number;
+	y: number;
+	s?: number;
+	tie: string;
+	jump?: number;
+	shout?: number;
+	hat?: 'bowler' | 'cap';
+}> = ({x, y, s = 1, tie, jump = 0, shout = 0, hat}) => (
 	<g transform={`translate(${x} ${y - jump}) scale(${s})`}>
 		<ellipse cx="0" cy={jump} rx="55" ry="10" fill="rgba(27,31,42,0.12)" transform={`translate(0 ${jump}) scale(${1 - jump / 400} 1)`} />
 		<rect x="-48" y="-125" width="96" height="125" rx="44" fill="#6F7A93" />
 		<polygon points="0,-120 -13,-96 0,-52 13,-96" fill={tie} />
 		<circle cx="0" cy="-168" r="48" fill="#F2C9A0" />
+		{hat === 'bowler' ? (
+			<g fill={INK}>
+				<ellipse cx="0" cy="-204" rx="34" ry="30" />
+				<ellipse cx="0" cy="-182" rx="58" ry="10" />
+			</g>
+		) : null}
+		{hat === 'cap' ? (
+			<g fill={RED}>
+				<path d="M -46 -178 A 46 46 0 0 1 46 -178 Z" />
+				<rect x="8" y="-186" width="62" height="12" rx="6" fill="#B83238" />
+			</g>
+		) : null}
 		<circle cx="-16" cy="-174" r="6" fill={INK} />
 		<circle cx="16" cy="-174" r="6" fill={INK} />
 		{shout > 0 ? (
