@@ -6,6 +6,7 @@ import {RoomShort} from './RoomShort';
 import {Avatar} from './Avatar';
 import {Banner} from './Banner';
 import {DeadlineShort, OrgTreeShort, SynergyShort} from './ConceptShorts';
+import {WatermelonShort} from './WatermelonShort';
 
 const shortMeta = ({props}: {props: ShortProps}) => ({
 	durationInFrames: Math.ceil(props.totalSeconds * 30) + 15,
@@ -55,6 +56,19 @@ export const Root: React.FC = () => {
 					calculateMetadata={shortMeta}
 				/>
 			))}
+			{/* Plán 2026-11: W01 Watermelon status; +36 snímků = pointa drží 1,2 s po hlasu (style guide) */}
+			<Composition
+				id="WatermelonShort"
+				component={WatermelonShort}
+				durationInFrames={150}
+				fps={30}
+				width={1080}
+				height={1920}
+				defaultProps={defaultShort}
+				calculateMetadata={({props}) => ({
+					durationInFrames: Math.ceil(props.totalSeconds * 30) + 36,
+				})}
+			/>
 			{/* Banner kanálu (still 2560x1440) */}
 			<Composition id="Banner" component={Banner} durationInFrames={1} fps={30} width={2560} height={1440} />
 			{/* Profilovka kanálu (still 800x800) */}

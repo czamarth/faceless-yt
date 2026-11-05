@@ -10,12 +10,12 @@ import {
 } from 'remotion';
 import type {Segment, ShortProps} from './CorporateShort';
 
-const font = 'Segoe UI, Arial, sans-serif';
-const NEVER = 1e9;
+export const font = 'Segoe UI, Arial, sans-serif';
+export const NEVER = 1e9;
 
-const ramp = (t: number, a: number, b: number) => Math.min(1, Math.max(0, (t - a) / (b - a)));
-const sm = (x: number) => x * x * (3 - 2 * x);
-const cue = (segs: Segment[], re: RegExp) => {
+export const ramp = (t: number, a: number, b: number) => Math.min(1, Math.max(0, (t - a) / (b - a)));
+export const sm = (x: number) => x * x * (3 - 2 * x);
+export const cue = (segs: Segment[], re: RegExp) => {
 	const s = segs.find((x) => re.test(x.text));
 	return s ? s.start : NEVER;
 };
@@ -46,7 +46,7 @@ const Subtitle: React.FC<{seg: Segment}> = ({seg}) => {
 	);
 };
 
-const Shell: React.FC<ShortProps & {bg: string; vig?: number; children: (t: number) => React.ReactNode}> = ({
+export const Shell: React.FC<ShortProps & {bg: string; vig?: number; children: (t: number) => React.ReactNode}> = ({
 	totalSeconds,
 	audio,
 	segments,
@@ -90,7 +90,7 @@ const Shell: React.FC<ShortProps & {bg: string; vig?: number; children: (t: numb
 	);
 };
 
-const Svg: React.FC<{children: React.ReactNode}> = ({children}) => (
+export const Svg: React.FC<{children: React.ReactNode}> = ({children}) => (
 	<svg width="1080" height="1920" viewBox="0 0 1080 1920" style={{position: 'absolute', inset: 0}}>
 		{children}
 	</svg>
