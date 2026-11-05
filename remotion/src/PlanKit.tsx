@@ -60,6 +60,27 @@ export const PunchStamp: React.FC<{t: number; at: number; lines: string[]; color
 	);
 };
 
+// Zaoblená štítek-pilulka (sdílená)
+export const Pill: React.FC<{x?: number; y: number; w: number; label: string; color?: string; fill?: string; o?: number; fs?: number; textColor?: string}> = ({
+	x = 540,
+	y,
+	w,
+	label,
+	color = INK,
+	fill = '#F4F1EA',
+	o = 1,
+	fs = 34,
+	textColor,
+}) =>
+	o > 0.01 ? (
+		<g opacity={o} transform={`translate(${x} ${y})`}>
+			<rect x={-w / 2} y="-34" width={w} height="68" rx="34" fill={fill} stroke={color} strokeWidth="5" />
+			<text x="0" y={fs * 0.36} textAnchor="middle" fontFamily={font} fontWeight="900" fontSize={fs} letterSpacing="3" fill={textColor ?? color}>
+				{label}
+			</text>
+		</g>
+	) : null;
+
 export const Sticky: React.FC<{
 	x: number;
 	y: number;

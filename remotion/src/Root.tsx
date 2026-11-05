@@ -14,6 +14,12 @@ import {HolidayPartyShort} from './HolidayPartyShort';
 import {AbileneParadoxShort} from './AbileneParadoxShort';
 import {SkeletonCrewShort} from './SkeletonCrewShort';
 import {UnlimitedVacationShort} from './UnlimitedVacationShort';
+import {ResolutionsRoadmapShort} from './ResolutionsRoadmapShort';
+import {GoodhartOkrShort} from './GoodhartOkrShort';
+import {CircleBackShort} from './CircleBackShort';
+import {PeterPrincipleShort} from './PeterPrincipleShort';
+import {FireTicketShort} from './FireTicketShort';
+import {LoveContractShort} from './LoveContractShort';
 
 // Díly ročního plánu (faceless-yt-brain/plan.csv): +36 snímků = pointa drží 1,2 s po hlasu (style guide)
 const planShorts = [
@@ -25,6 +31,12 @@ const planShorts = [
 	{id: 'AbileneParadoxShort', component: AbileneParadoxShort}, // W06
 	{id: 'SkeletonCrewShort', component: SkeletonCrewShort}, // W07
 	{id: 'UnlimitedVacationShort', component: UnlimitedVacationShort}, // W08
+	{id: 'ResolutionsRoadmapShort', component: ResolutionsRoadmapShort}, // W09
+	{id: 'GoodhartOkrShort', component: GoodhartOkrShort}, // W10
+	{id: 'CircleBackShort', component: CircleBackShort}, // W11
+	{id: 'PeterPrincipleShort', component: PeterPrincipleShort}, // W12
+	{id: 'FireTicketShort', component: FireTicketShort}, // W13
+	{id: 'LoveContractShort', component: LoveContractShort}, // W14
 ];
 
 const shortMeta = ({props}: {props: ShortProps}) => ({
