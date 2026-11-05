@@ -8,11 +8,15 @@ import {Banner} from './Banner';
 import {DeadlineShort, OrgTreeShort, SynergyShort} from './ConceptShorts';
 import {WatermelonShort} from './WatermelonShort';
 import {TableThisShort} from './TableThisShort';
+import {GratitudeWallShort} from './GratitudeWallShort';
+import {UseItOrLoseItShort} from './UseItOrLoseItShort';
 
 // Díly ročního plánu (faceless-yt-brain/plan.csv): +36 snímků = pointa drží 1,2 s po hlasu (style guide)
 const planShorts = [
 	{id: 'WatermelonShort', component: WatermelonShort}, // W01
 	{id: 'TableThisShort', component: TableThisShort}, // W02
+	{id: 'GratitudeWallShort', component: GratitudeWallShort}, // W03
+	{id: 'UseItOrLoseItShort', component: UseItOrLoseItShort}, // W04
 ];
 
 const shortMeta = ({props}: {props: ShortProps}) => ({
