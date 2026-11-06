@@ -32,6 +32,12 @@ import {ExcelCovidShort} from './ExcelCovidShort';
 import {ConwaysLawShort} from './ConwaysLawShort';
 import {CubicleInventorShort} from './CubicleInventorShort';
 import {StandupShort} from './StandupShort';
+import {BusFactorShort} from './BusFactorShort';
+import {PasswordRotationShort} from './PasswordRotationShort';
+import {FourDayWeekShort} from './FourDayWeekShort';
+import {ReplyAllShort} from './ReplyAllShort';
+import {OnboardingShort} from './OnboardingShort';
+import {StackRankingShort} from './StackRankingShort';
 
 // Díly ročního plánu (faceless-yt-brain/plan.csv): +36 snímků = pointa drží 1,2 s po hlasu (style guide)
 const planShorts = [
@@ -61,6 +67,12 @@ const planShorts = [
 	{id: 'ConwaysLawShort', component: ConwaysLawShort}, // W24
 	{id: 'CubicleInventorShort', component: CubicleInventorShort}, // W25
 	{id: 'StandupShort', component: StandupShort}, // W26
+	{id: 'BusFactorShort', component: BusFactorShort}, // W27
+	{id: 'PasswordRotationShort', component: PasswordRotationShort}, // W28
+	{id: 'FourDayWeekShort', component: FourDayWeekShort}, // W29
+	{id: 'ReplyAllShort', component: ReplyAllShort}, // W30
+	{id: 'OnboardingShort', component: OnboardingShort}, // W31
+	{id: 'StackRankingShort', component: StackRankingShort}, // W32
 ];
 
 const shortMeta = ({props}: {props: ShortProps}) => ({
