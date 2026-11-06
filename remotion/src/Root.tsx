@@ -38,6 +38,12 @@ import {FourDayWeekShort} from './FourDayWeekShort';
 import {ReplyAllShort} from './ReplyAllShort';
 import {OnboardingShort} from './OnboardingShort';
 import {StackRankingShort} from './StackRankingShort';
+import {CalendarPollShort} from './CalendarPollShort';
+import {KodakDrawerShort} from './KodakDrawerShort';
+import {OutOfOfficeLoopShort} from './OutOfOfficeLoopShort';
+import {DentistCallCenterShort} from './DentistCallCenterShort';
+import {ConcordeFallacyShort} from './ConcordeFallacyShort';
+import {FileVersionNamesShort} from './FileVersionNamesShort';
 
 // Díly ročního plánu (faceless-yt-brain/plan.csv): +36 snímků = pointa drží 1,2 s po hlasu (style guide)
 const planShorts = [
@@ -73,6 +79,12 @@ const planShorts = [
 	{id: 'ReplyAllShort', component: ReplyAllShort}, // W30
 	{id: 'OnboardingShort', component: OnboardingShort}, // W31
 	{id: 'StackRankingShort', component: StackRankingShort}, // W32
+	{id: 'CalendarPollShort', component: CalendarPollShort}, // W33
+	{id: 'KodakDrawerShort', component: KodakDrawerShort}, // W34
+	{id: 'OutOfOfficeLoopShort', component: OutOfOfficeLoopShort}, // W35
+	{id: 'DentistCallCenterShort', component: DentistCallCenterShort}, // W36
+	{id: 'ConcordeFallacyShort', component: ConcordeFallacyShort}, // W37
+	{id: 'FileVersionNamesShort', component: FileVersionNamesShort}, // W38
 ];
 
 const shortMeta = ({props}: {props: ShortProps}) => ({
