@@ -20,6 +20,12 @@ import {CircleBackShort} from './CircleBackShort';
 import {PeterPrincipleShort} from './PeterPrincipleShort';
 import {FireTicketShort} from './FireTicketShort';
 import {LoveContractShort} from './LoveContractShort';
+import {RingelmannShort} from './RingelmannShort';
+import {SlackArchaeologyShort} from './SlackArchaeologyShort';
+import {HofstadterShort} from './HofstadterShort';
+import {DaylightMeetingShort} from './DaylightMeetingShort';
+import {BikesheddingShort} from './BikesheddingShort';
+import {OnMuteShort} from './OnMuteShort';
 
 // Díly ročního plánu (faceless-yt-brain/plan.csv): +36 snímků = pointa drží 1,2 s po hlasu (style guide)
 const planShorts = [
@@ -37,6 +43,12 @@ const planShorts = [
 	{id: 'PeterPrincipleShort', component: PeterPrincipleShort}, // W12
 	{id: 'FireTicketShort', component: FireTicketShort}, // W13
 	{id: 'LoveContractShort', component: LoveContractShort}, // W14
+	{id: 'RingelmannShort', component: RingelmannShort}, // W15
+	{id: 'SlackArchaeologyShort', component: SlackArchaeologyShort}, // W16
+	{id: 'HofstadterShort', component: HofstadterShort}, // W17
+	{id: 'DaylightMeetingShort', component: DaylightMeetingShort}, // W18
+	{id: 'BikesheddingShort', component: BikesheddingShort}, // W19
+	{id: 'OnMuteShort', component: OnMuteShort}, // W20
 ];
 
 const shortMeta = ({props}: {props: ShortProps}) => ({
