@@ -26,6 +26,12 @@ import {HofstadterShort} from './HofstadterShort';
 import {DaylightMeetingShort} from './DaylightMeetingShort';
 import {BikesheddingShort} from './BikesheddingShort';
 import {OnMuteShort} from './OnMuteShort';
+import {EndOfMeetingsShort} from './EndOfMeetingsShort';
+import {BrooksLawShort} from './BrooksLawShort';
+import {ExcelCovidShort} from './ExcelCovidShort';
+import {ConwaysLawShort} from './ConwaysLawShort';
+import {CubicleInventorShort} from './CubicleInventorShort';
+import {StandupShort} from './StandupShort';
 
 // Díly ročního plánu (faceless-yt-brain/plan.csv): +36 snímků = pointa drží 1,2 s po hlasu (style guide)
 const planShorts = [
@@ -49,6 +55,12 @@ const planShorts = [
 	{id: 'DaylightMeetingShort', component: DaylightMeetingShort}, // W18
 	{id: 'BikesheddingShort', component: BikesheddingShort}, // W19
 	{id: 'OnMuteShort', component: OnMuteShort}, // W20
+	{id: 'EndOfMeetingsShort', component: EndOfMeetingsShort}, // W21
+	{id: 'BrooksLawShort', component: BrooksLawShort}, // W22
+	{id: 'ExcelCovidShort', component: ExcelCovidShort}, // W23
+	{id: 'ConwaysLawShort', component: ConwaysLawShort}, // W24
+	{id: 'CubicleInventorShort', component: CubicleInventorShort}, // W25
+	{id: 'StandupShort', component: StandupShort}, // W26
 ];
 
 const shortMeta = ({props}: {props: ShortProps}) => ({
