@@ -52,6 +52,14 @@ def pick_gemini_key() -> str:
     return key
 
 
+def error_message(resp) -> str:
+    """Text chyby z odpovědi API. Chybová odpověď nemusí být JSON (HTML od proxy, prázdné tělo)."""
+    try:
+        return resp.json().get("error", {}).get("message") or resp.text[:300]
+    except (ValueError, AttributeError):
+        return resp.text[:300]
+
+
 def pcm_to_wav(pcm: bytes, path: Path, rate: int = 24000) -> None:
     with wave.open(str(path), "wb") as w:
         w.setnchannels(1)
@@ -76,9 +84,13 @@ def synth_gemini(text: str, model: str, voice: str, style: str, out: Path) -> No
         "https://generativelanguage.googleapis.com/v1beta/interactions", headers=headers, json=body, timeout=90
     )
     if resp.status_code != 200:
-        msg = resp.json().get("error", {}).get("message", resp.text[:300]) if resp.content else ""
-        raise RuntimeError(f"HTTP {resp.status_code}: {msg}")
-    audio = next(c for s in resp.json()["steps"] for c in s.get("content", []) if c.get("type") == "audio")
+        raise RuntimeError(f"HTTP {resp.status_code}: {error_message(resp)}")
+    audio = next(
+        (c for s in resp.json().get("steps", []) for c in s.get("content", []) if c.get("type") == "audio"), None
+    )
+    if audio is None:
+        # bez výchozí hodnoty by next() skončilo holým StopIteration, ze kterého není poznat, co se stalo
+        raise RuntimeError("Odpověď API neobsahuje zvuk (invalid response: no audio content)")
     data = base64.b64decode(audio["data"])
     mime = audio.get("mime_type", "")
     if data[:4] == b"RIFF":

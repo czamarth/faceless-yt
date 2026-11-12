@@ -74,7 +74,7 @@ def sentences(par: str):
 
 
 def align_part(wav: Path, paras):
-    """Časy odstavců a vět pro jeden zvukový soubor. Vrací (segmenty, délka souboru)."""
+    """Časy odstavců a vět pro jeden zvukový soubor. Vrací (segmenty, délka souboru, rozsahy odstavců)."""
     sil, total = detect_silences(wav)
     t0, t1 = speech_bounds(sil, total)
     pspans = align([len(p) for p in paras], (t0, t1), sil, tol=2.0, weight=1.5)
