@@ -12,11 +12,13 @@ Engine kokoro je lokální (models/kokoro-v1.0.onnx + voices-v1.0.bin), bez kvó
 odstavce syntetizuje zvlášť a odděluje je tichem (Kokoro nezná značky <short pause>).
 
 Výstup:
-  ../assets/<name>/part1.wav ...        syntetizovaný hlas (cache, existující se nepřegenerují)
+  ../assets/<name>/part1.wav ...        synthesized voice (cache; a part is regenerated only when its text
+                                        or settings change; the fingerprint is in part1.json)
   ../remotion/public/<name>.wav         spojený a znormalizovaný hlas (-16 LUFS)
   ../remotion/public/<name>.timeline.json
 """
 import argparse
+import hashlib
 import json
 import subprocess
 import sys
@@ -56,6 +58,38 @@ def synth_kokoro(paras, voice: str, lang: str, speed: float, out: Path) -> None:
     tp.pcm_to_wav(pcm, out, rate)
 
 
+def part_fingerprint(text: str, **params) -> str:
+    """Fingerprint of everything that determines an audio part (text, voice, engine, model, speed…)."""
+    material = json.dumps({"text": text, **params}, sort_keys=True, ensure_ascii=False)
+    return hashlib.sha256(material.encode("utf-8")).hexdigest()
+
+
+def cache_state(wav: Path, fingerprint: str) -> str:
+    """State of a cached part: 'missing' | 'ok' | 'stale' | 'unknown'.
+
+    'stale' = a fingerprint sits next to the audio but does not match (script, voice or --parts changed).
+    'unknown' = audio without a fingerprint (made before fingerprints existed); cannot tell whether it matches.
+    """
+    if not (wav.exists() and wav.stat().st_size > 1000):
+        return "missing"
+    meta = wav.with_suffix(".json")
+    if not meta.exists():
+        return "unknown"
+    try:
+        return "ok" if json.loads(meta.read_text(encoding="utf-8")).get("fingerprint") == fingerprint else "stale"
+    except (OSError, ValueError, AttributeError):
+        return "stale"
+
+
+def write_fingerprint(wav: Path, fingerprint: str) -> None:
+    wav.with_suffix(".json").write_text(json.dumps({"fingerprint": fingerprint}), encoding="utf-8")
+
+
+def concat_entry(path: Path) -> str:
+    """A line for the ffmpeg concat list; an apostrophe in the path (C:/Users/O'Brien/…) must be escaped."""
+    return "file '" + path.as_posix().replace("'", "'\\''") + "'"
+
+
 def split_parts(paras, n):
     """Rozdělí odstavce na n souvislých částí s podobným počtem znaků."""
     if n <= 1:
@@ -85,6 +119,7 @@ def main() -> int:
     ap.add_argument("--parts", type=int, default=2, help="na kolik požadavků text rozdělit (výchozí 2)")
     ap.add_argument("--no-pause-tags", action="store_true", help="nevkládat <short pause> mezi odstavce")
     ap.add_argument("--dry-run", action="store_true")
+    ap.add_argument("--force", action="store_true", help="also regenerate parts that have no fingerprint (older runs)")
     args = ap.parse_args()
     kokoro = args.engine == "kokoro"
     voice = args.voice or ("bm_george" if kokoro else "Charon")
@@ -96,10 +131,23 @@ def main() -> int:
     files = [adir / f"part{i + 1}.wav" for i in range(len(parts))]
     sep = "\n\n" if args.no_pause_tags else "\n\n<short pause>\n\n"
 
-    todo = [(f, ix) for f, ix in zip(files, parts) if not (f.exists() and f.stat().st_size > 1000)]
+    # Part fingerprint: cached audio is reused only when it matches the current text and settings.
+    # Previously the mere existence of the file decided, so an edited script silently reused the old voice.
+    def fingerprint(ix) -> str:
+        if kokoro:
+            return part_fingerprint("\n\n".join(paras[i] for i in ix), engine="kokoro", voice=voice, lang=args.lang, speed=args.speed)
+        return part_fingerprint(sep.join(paras[i] for i in ix), engine="gemini", voice=voice, model=args.model, style=tp.DEFAULT_STYLE)
+
+    prints = {f: fingerprint(ix) for f, ix in zip(files, parts)}
+    states = {f: cache_state(f, prints[f]) for f in files}
+    todo = [(f, ix) for f, ix in zip(files, parts) if states[f] in ("missing", "stale") or (args.force and states[f] == "unknown")]
     print(f"Částí: {len(parts)}, k vygenerování (požadavků): {len(todo)}")
     for f, ix in todo:
-        print(f"  {f.name}: odstavce {ix[0] + 1}-{ix[-1] + 1} ({sum(len(paras[i]) for i in ix)} znaků)")
+        why = " (script or settings changed)" if states[f] == "stale" else ""
+        print(f"  {f.name}: odstavce {ix[0] + 1}-{ix[-1] + 1} ({sum(len(paras[i]) for i in ix)} znaků){why}")
+    for f in files:
+        if states[f] == "unknown" and not args.force:
+            print(f"  WARNING: {f.name} has no fingerprint, cannot verify it matches the script. Using it; regenerate with --force")
     if args.dry_run:
         return 0
     if not kokoro and len(todo) > DAILY_LIMIT:
@@ -113,11 +161,13 @@ def main() -> int:
             except Exception as exc:  # noqa: BLE001
                 print(f"{f.name} selhal (Kokoro): {type(exc).__name__}: {str(exc)[:200]}")
                 return 2
+            write_fingerprint(f, prints[f])
             continue
         text = sep.join(paras[i] for i in ix)
         for attempt in (1, 2):
             try:
                 tp.synth_gemini(text, args.model, voice, tp.DEFAULT_STYLE, f)
+                write_fingerprint(f, prints[f])
                 break
             except Exception as exc:  # noqa: BLE001
                 label = tp.classify(exc)
@@ -145,9 +195,9 @@ def main() -> int:
                     "-t", str(GAP), "-c:a", "pcm_s16le", str(silence)], check=True)
     lines = []
     for i, f in enumerate(files):
-        lines.append(f"file '{f.as_posix()}'")
+        lines.append(concat_entry(f))
         if i < len(files) - 1:
-            lines.append(f"file '{silence.as_posix()}'")
+            lines.append(concat_entry(silence))
     listfile = adir / "concat.txt"
     listfile.write_text("\n".join(lines), encoding="utf-8")
     raw = adir / "combined_raw.wav"
